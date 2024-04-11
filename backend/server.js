@@ -2,6 +2,7 @@ require("dotenv").config(); // allows us to use .env file
 require("./config/db"); // connect to the database
 const express = require("express");
 const morgan = require("morgan");
+const cors = require("cors");
 const path = require("path");
 
 app = express();
@@ -15,6 +16,7 @@ const PORT = process.env.PORT || 3001;
 */
 app.use(express.json());
 app.use(morgan("dev"));
+app.use(cors());
 app.use("/api/card", require("./routes/api/cards"));
 
 // Serve static assets if in production
