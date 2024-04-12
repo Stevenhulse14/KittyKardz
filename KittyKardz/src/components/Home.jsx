@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { getCards } from "../api/card";
-
+import { Card } from ".";
 const Home = () => {
   const [allCards, setAllCards] = useState([]);
 
@@ -12,12 +12,9 @@ const Home = () => {
     fetchCards();
   }, []);
   return (
-    <div>
+    <div className="flex flex-wrap justify-center">
       {allCards.map((card) => (
-        <div key={card._id}>
-          <h1>{card.title}</h1>
-          <p>{card.description}</p>
-        </div>
+        <Card key={card._id} card={card} />
       ))}
     </div>
   );

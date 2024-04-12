@@ -1,34 +1,83 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { createCard, updateCard } from "../api/card";
 
-const CreateCardForm = () => {
+const CreateCardForm = ({ card }) => {
   const [cardName, setCardName] = useState("");
   const [cardEffect, setCardEffect] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(cardName, cardEffect);
+    if (card) {
+      console.log("Updating Card");
+
+      // Update Card
+      await updateCard(card._id, {
+        title: cardName ? cardName : card.title,
+        description: cardEffect ? cardEffect : card.description,
+        imageUrl: imageUrl ? imageUrl : card.imageUrl,
+      });
+      navigate(`/`);
+    } else {
+      // Create Card
+      console.log(cardName, cardEffect);
+      const APIdata = await createCard({
+        title: cardName,
+        description: cardEffect,
+        imageUrl,
+      });
+      if (APIdata) {
+        alert("Card Created Successfully", APIdata.data);
+      }
+    }
   };
+  // "w-full max-w-xs mx-auto mt-20 p-4 bg-white shadow-md rounded-md"
   return (
-    <div className="w-full max-w-xs mx-auto mt-20 p-4 bg-white shadow-md rounded-md">
+    <div
+      className={` w-full max-w-xs mx-auto mt-20 p-4 shadow-md rounded-md ${
+        card ? "bg-gray-800 text-white" : "bg-white text-black"
+      }`}
+    >
       <form onSubmit={handleSubmit}>
         <label className="block text-gray-700 text-sm font-bold mb-2">
-          Enter the name of your new Card :
+          Enter the name of your Card :
         </label>
         <input
           type="text"
-          className="shadow appearance-none border rounded w-full py-2 px-3 my-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          placeholder="Enter Card Name"
+          className={`shadow appearance-none border rounded w-full py-2 px-3 my-2 leading-tight focus:outline-none focus:shadow-outline ${
+            card ? "bg-gray-700 text-white" : "bg-white text-black"
+          }`}
+          placeholder={card ? card.title : "Enter Card Name"}
           onChange={(e) => {
             setCardName(e.target.value);
           }}
           value={cardName}
         ></input>
         <label className="block text-gray-700 text-sm font-bold mb-2">
+          Enter the Image URL of the Card :
+        </label>
+        <input
+          type="text"
+          className={`shadow appearance-none border rounded w-full py-2 px-3 my-2 leading-tight focus:outline-none focus:shadow-outline ${
+            card ? "bg-gray-700 text-white" : "bg-white text-black"
+          }`}
+          placeholder={card ? card.imageUrl : "Enter Image URL"}
+          onChange={(e) => {
+            setImageUrl(e.target.value);
+          }}
+          value={imageUrl}
+        ></input>
+        <label className="block text-gray-700 text-sm font-bold mb-2">
           Enter the Effect of the Card :
         </label>
         <textarea
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          placeholder="Enter Card Description"
+          className={`shadow appearance-none border rounded w-full py-2 px-3 my-2 leading-tight focus:outline-none focus:shadow-outline ${
+            card ? "bg-gray-700 text-white" : "bg-white text-black"
+          }`}
+          placeholder={card ? card.description : "Enter card description"}
           onChange={(e) => {
             setCardEffect(e.target.value);
           }}
@@ -40,7 +89,7 @@ const CreateCardForm = () => {
             type="submit"
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 my-2 rounded"
           >
-            CREATE
+            {card ? "Update" : "Create"}
           </button>
         </div>
       </form>

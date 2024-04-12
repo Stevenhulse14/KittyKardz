@@ -16,6 +16,10 @@ const cardSchema = new Schema(
       type: String,
       required: true,
     },
+    imageUrl: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true }
 );
